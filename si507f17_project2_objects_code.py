@@ -3,6 +3,7 @@
 import requests
 import json
 import unittest
+import pprint
 
 ## Instructions for each piece to be completed for this project can be found in the file, below.
 
@@ -65,13 +66,21 @@ def sample_get_cache_itunes_data(search_term,media_term="all"):
 		cache_file_ref.close()
 		return CACHE_DICTION[unique_ident]
 
+x = sample_get_cache_itunes_data("Michael Jackson",media_term="all")
+pprint.pprint(x)
+
 
 ## [PROBLEM 1] [250 POINTS]
 print("\n***** PROBLEM 1 *****\n")
 
 
 ## For problem 1, you should define a class Media, representing ANY piece of media you can find on iTunes search. 
-
+class Media(objects):
+	def __init__(self, media_dic):
+		self.title = title["results"][0]["trackName"]
+		self.author = autor["results"][0][""]
+		self.itunes_URL = itunes_URL[]
+		self.ituens_id = itunes_id[]
 
 ## The Media class should accept one dictionary data structure representing a piece of media from iTunes as input to the constructor.
 ## Its constructor should invoke a method to get and cache data, and instatiate at least the following instance variables:
