@@ -3,7 +3,7 @@
 import requests
 import json
 import unittest
-import pprint
+# import pprint
 
 ## Instructions for each piece to be completed for this project can be found in the file, below.
 
@@ -66,8 +66,9 @@ def sample_get_cache_itunes_data(search_term,media_term="all"):
 		cache_file_ref.close()
 		return CACHE_DICTION[unique_ident]
 
-x = sample_get_cache_itunes_data("Michael Jackson",media_term="all")
-pprint.pprint(x)
+# x = sample_get_cache_itunes_data("Michael Jackson",media_term="all")
+# media_dic = x['results'][0]
+
 
 
 ## [PROBLEM 1] [250 POINTS]
@@ -75,12 +76,27 @@ print("\n***** PROBLEM 1 *****\n")
 
 
 ## For problem 1, you should define a class Media, representing ANY piece of media you can find on iTunes search. 
-class Media(objects):
+class Media(object):
 	def __init__(self, media_dic):
-		self.title = title["results"][0]["trackName"]
-		self.author = autor["results"][0][""]
-		self.itunes_URL = itunes_URL[]
-		self.ituens_id = itunes_id[]
+		# print(json.dumps(media_dic, indent=4, sort_keys=True))
+		self.title = media_dic['trackName']
+		self.author = media_dic['artistName']
+		self.itunes_URL = media_dic['trackViewUrl']
+		self.itunes_id = media_dic['trackId']
+
+	def __str__(self):
+		print(self.title, self.author)
+		return "{} by {}".format(self.title, self.author)
+
+	def __repr__(self):
+		return "ITUNES MEDIA: {}".format(self.itunes_id)
+
+	def __len__(self):
+		return 0
+
+	def __contains__(self, anystring):
+		return anystring in self.title
+
 
 ## The Media class should accept one dictionary data structure representing a piece of media from iTunes as input to the constructor.
 ## Its constructor should invoke a method to get and cache data, and instatiate at least the following instance variables:
@@ -102,8 +118,48 @@ print("\n***** PROBLEM 2 *****\n")
 ## In 2 parts.
 
 ## Now, you'll define 2 more different classes, each of which *inherit from* class Media:
-## class Song
-## class Movie
+class Song(Media):
+	def __init__(self, media_dic):
+		Media.__init__(self, media_dic)
+		self.album = media_dic['collectionName']
+		self.track_number = media_dic['trackNumber']
+		self.genre = media_dic['primaryGenreName']
+		self.timemillis = media_dic['trackTimeMillis']
+
+	def __len__(self):
+		self.timemillis = int(self.timemillis)
+		self.seconds=(self.timemillis/1000)
+		self.seconds=int(self.seconds)
+		return self.seconds		
+
+
+class Movie(Media):
+	def __init__(self,media_dic):
+		Media.__init__(self,media_dic)
+		self.rating = media_dic['contentAdvisoryRating']
+		self.genre = media_dic['primaryGenreName']
+		self.description = media_dic['longDescription']
+		if len(media_dic['longDescription']) == 0:
+			self.description = None
+		else:
+			self.description = media_dic['longDescription'].encode('utf-8')
+		# self.timemillis = media_dic['trackTimeMillis']
+		try:
+			media_dic.get('trackTimeMillis')
+			self.timemillis = media_dic['trackTimeMillis']
+		except KeyError:
+			self.timemillis = 0	
+
+	def __len__(self):
+		self.timemillis = int(self.timemillis)
+		self.minutes=(self.timemillis/(1000*60))
+		self.minutes=int(self.minutes)
+		return self.minutes
+	
+
+	def title_words_num(self):
+		return len(self.description)
+
 
 ## In the class definitions, you can assume a programmer would pass to each class's constructor only a dictionary that represented the correct media type (song, movie, audiobook/ebook).
 
@@ -149,6 +205,8 @@ song_samples = sample_get_cache_itunes_data("love","music")["results"]
 
 movie_samples = sample_get_cache_itunes_data("love","movie")["results"]
 
+# pprint.pprint(media_samples)
+# pprint.pprint(song_samples)
 
 ## You may want to do some investigation on these variables to make sure you understand correctly what type of value they hold, what's in each one!
 
@@ -160,12 +218,50 @@ movie_samples = sample_get_cache_itunes_data("love","movie")["results"]
 ## and a list of Book objects saved in a variable book_list.
 
 ## You may use any method of accumulation to make that happen.
+media_list = []
+for item in media_samples: #class is a dictionary 
+	media_object = Media(item) #item in Media = objects
+	media_list.append(media_object)
+
+song_list = []
+for item in song_samples:
+	song_object = Song(item)
+	song_list.append(song_object)
+
+movie_list = []
+for item in movie_samples:
+	movie_object = Movie(item)
+	movie_list.append(movie_object)
+
+
 
 
 
 
 ## [PROBLEM 4] [200 POINTS]
 print("\n***** PROBLEM 4 *****\n")
+
+movies = open("movies.csv","w")
+movies.write("title, artist, id, url, length\n")
+for movie in movie_list:
+	movies.write('""{}", {}, {}, {}, {}\n'.format(movie.title, movie.author, movie.itunes_id, movie.itunes_URL, len(movie)))
+
+# movies.close()
+
+songs = open("songs.csv", "w")
+songs.write("title, artist, id, url, length\n")
+for song in song_list:
+	songs.write('""{}", {}, {}, {}, {}\n'.format(song.title, song.author, song.itunes_id, song.itunes_URL, len(song)))
+
+songs.close()
+
+medias = open("media.csv", "w")
+medias.write("title, artist, id, url, length\n")
+for media in media_list:
+	medias.write('""{}", {}, {}, {}, {}\n'.format(media.title, media.author, media.itunes_id, media.itunes_URL, len(media)))
+
+medias.close()
+
 
 ## Finally, write 3 CSV files:
 # - movies.csv
