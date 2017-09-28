@@ -98,8 +98,8 @@ class Media(object):
 		return anystring in self.title
 
 
-## The Media class should accept one dictionary data structure representing a piece of media from iTunes as input to the constructor.
-## Its constructor should invoke a method to get and cache data, and instatiate at least the following instance variables:
+## The Media class constructor should accept one dictionary data structure representing a piece of media from iTunes as input to the constructor.
+## It should instatiate at least the following instance variables:
 ## - title
 ## - author
 ## - itunes_URL
@@ -161,7 +161,7 @@ class Movie(Media):
 		return len(self.description)
 
 
-## In the class definitions, you can assume a programmer would pass to each class's constructor only a dictionary that represented the correct media type (song, movie, audiobook/ebook).
+## In the class definitions, you can assume a programmer would pass to each class's constructor only a dictionary that represented the correct media type (song, movie).
 
 ## Below follows a description of how each of these should be different from the Media parent class.
 
@@ -195,7 +195,7 @@ print("\n***** PROBLEM 3 *****\n")
 
 ## In this problem, you'll write some code to use the definitions you've just written.
 
-## First, here we have provided some variables which hold data about media overall, songs, movies, and books. 
+## First, here we have provided some variables which hold data about media overall, songs, and movies.
 
 ## NOTE: (The first time you run this file, data will be cached, so the data saved in each variable will be the same each time you run the file, as long as you do not delete your cached data.)
 
@@ -214,8 +214,7 @@ movie_samples = sample_get_cache_itunes_data("love","movie")["results"]
 
 ## You should end up with: a list of Media objects saved in a variable media_list, 
 ## a list of Song objects saved in a variable song_list, 
-## a list of Movie objects saved in a variable movie_list, 
-## and a list of Book objects saved in a variable book_list.
+## a list of Movie objects saved in a variable movie_list.
 
 ## You may use any method of accumulation to make that happen.
 media_list = []
