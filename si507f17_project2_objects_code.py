@@ -246,7 +246,7 @@ movies.write("title, artist, id, url, length\n")
 for movie in movie_list:
 	movies.write('""{}", {}, {}, {}, {}\n'.format(movie.title, movie.author, movie.itunes_id, movie.itunes_URL, len(movie)))
 
-# movies.close()
+movies.close()
 
 songs = open("songs.csv", "w")
 songs.write("title, artist, id, url, length\n")
